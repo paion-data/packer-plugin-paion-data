@@ -10,10 +10,8 @@ import (
 // FlatConfig is an auto-generated flat version of Config.
 // Where the contents of a field with a `mapstructure:,squash` tag are bubbled up.
 type FlatConfig struct {
-	SslCertSource    *string `mapstructure:"sslCertSource" required:"true" cty:"sslCertSource" hcl:"sslCertSource"`
-	SslCertKeySource *string `mapstructure:"sslCertKeySource" required:"true" cty:"sslCertKeySource" hcl:"sslCertKeySource"`
-	BaseDomain       *string `mapstructure:"baseDomain" required:"true" cty:"baseDomain" hcl:"baseDomain"`
-	HomeDir          *string `mapstructure:"homeDir" required:"false" cty:"homeDir" hcl:"homeDir"`
+	BaseDomain *string `mapstructure:"baseDomain" required:"true" cty:"baseDomain" hcl:"baseDomain"`
+	HomeDir    *string `mapstructure:"homeDir" required:"false" cty:"homeDir" hcl:"homeDir"`
 }
 
 // FlatMapstructure returns a new FlatConfig.
@@ -28,10 +26,8 @@ func (*Config) FlatMapstructure() interface{ HCL2Spec() map[string]hcldec.Spec }
 // The decoded values from this spec will then be applied to a FlatConfig.
 func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 	s := map[string]hcldec.Spec{
-		"sslCertSource":    &hcldec.AttrSpec{Name: "sslCertSource", Type: cty.String, Required: false},
-		"sslCertKeySource": &hcldec.AttrSpec{Name: "sslCertKeySource", Type: cty.String, Required: false},
-		"baseDomain":       &hcldec.AttrSpec{Name: "baseDomain", Type: cty.String, Required: false},
-		"homeDir":          &hcldec.AttrSpec{Name: "homeDir", Type: cty.String, Required: false},
+		"baseDomain": &hcldec.AttrSpec{Name: "baseDomain", Type: cty.String, Required: false},
+		"homeDir":    &hcldec.AttrSpec{Name: "homeDir", Type: cty.String, Required: false},
 	}
 	return s
 }
