@@ -21,10 +21,10 @@ permissions:
 
 jobs:
   push-release-tag:
-    uses: QubitPi/hashicorp-aws/.github/workflows/version-bump.yml@master
+    uses: paion-data/github-actions-core/.github/workflows/version-bump.yml@master
     with:
-      user: QubitPi
-      email: jack20220723@gmail.com
+      user: qing-wq
+      email: 2702461713@qq.com
 
   get-go-version:
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
       go-version: ${{ steps.get-go-version.outputs.go-version }}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - name: 'Determine Go version'
+      - name: "Determine Go version"
         id: get-go-version
         run: |
           echo "Found Go $(cat .go-version)"
@@ -73,12 +73,3 @@ jobs:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           API_VERSION: ${{ steps.plugin_describe.outputs.api_version }}
-
-  slack-notification:
-    name: Send Slack Notification
-    needs: goreleaser
-    uses: QubitPi/hashicorp-aws/.github/workflows/slack-notification.yml@master
-    with:
-      job-status: ${{ needs.goreleaser.outputs.outcome }}
-    secrets:
-      slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
