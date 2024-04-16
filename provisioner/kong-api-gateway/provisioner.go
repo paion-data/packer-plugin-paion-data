@@ -46,18 +46,23 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 	return nil
 }
 
-var skipConfigSSL bool
-
-func (p *Provisioner) skipConfigSSL() bool {
+func (p *Provisioner) skipConfigSSL() (bool, error) {
 	if p.config.SslCertSource != "" && p.config.SslCertKeySource != "" && p.config.KongApiGatewayDomain != "" {
-		return true
+		return false, nil
 	}
-	return false
+	if p.config.SslCertSource == "" && p.config.SslCertKeySource == "" && p.config.KongApiGatewayDomain == "" {
+		return true, nil
+	}
+	return false, fmt.Errorf("sslCertSource, sslCertKeySource and kongApiGatewayDomain must be set together")
 }
 
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	p.config.HomeDir = getHomeDir(p.config.HomeDir)
-	skipConfigSSL = p.skipConfigSSL()
+	skipConfigSSL, err := p.skipConfigSSL()
+
+	if err != nil {
+		return err
+	}
 
 	if !skipConfigSSL {
 		fmt.Println("skip config ssl")
