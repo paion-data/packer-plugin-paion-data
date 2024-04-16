@@ -135,7 +135,7 @@ func getCommands(homeDir string) []string {
 		"curl -fsSL https://get.docker.com -o get-docker.sh",
 		"sh get-docker.sh",
 
-		"git clone https://github.com/QubitPi/docker-kong.git",
+		"git clone https://github.com/paion-data/docker-kong.git",
 
 		"sudo apt install -y nginx",
 		fmt.Sprintf("sudo mv %s/nginx-ssl.conf /etc/nginx/sites-enabled/default", homeDir),
