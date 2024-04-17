@@ -56,16 +56,19 @@ func (p *Provisioner) skipConfigSSL() (bool, error) {
 	return false, fmt.Errorf("sslCertSource, sslCertKeySource and kongApiGatewayDomain must be set together")
 }
 
+var skipConfigSSL bool
+
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	p.config.HomeDir = getHomeDir(p.config.HomeDir)
-	skipConfigSSL, err := p.skipConfigSSL()
+	var err error
+	skipConfigSSL, err = p.skipConfigSSL()
 
 	if err != nil {
 		return err
 	}
 
 	if !skipConfigSSL {
-		fmt.Println("skip config ssl")
+		fmt.Println("config ssl")
 		sslCertDestination := fmt.Sprintf(filepath.Join(p.config.HomeDir, "ssl.crt"))
 		err := p.ProvisionUpload(ui, communicator, p.config.SslCertSource, sslCertDestination)
 		if err != nil {
@@ -128,20 +131,25 @@ func getHomeDir(configValue string) string {
 }
 
 func getCommands(homeDir string) []string {
-	return []string{
+	cmd := []string{
 		"sudo apt update && sudo apt upgrade -y",
 		"sudo apt install software-properties-common -y",
 
 		"curl -fsSL https://get.docker.com -o get-docker.sh",
 		"sh get-docker.sh",
 
-		"git clone https://github.com/QubitPi/docker-kong.git",
+		"git clone https://github.com/paion-data/docker-kong.git",
 
 		"sudo apt install -y nginx",
-		fmt.Sprintf("sudo mv %s/nginx-ssl.conf /etc/nginx/sites-enabled/default", homeDir),
-		fmt.Sprintf("sudo mv %s/ssl.crt /etc/ssl/certs/server.crt", homeDir),
-		fmt.Sprintf("sudo mv %s/ssl.key /etc/ssl/private/server.key", homeDir),
 	}
+
+	if !skipConfigSSL {
+		cmd = append(cmd, fmt.Sprintf("sudo mv %s/nginx-ssl.conf /etc/nginx/sites-enabled/default", homeDir))
+		cmd = append(cmd, fmt.Sprintf("sudo mv %s/ssl.crt /etc/ssl/certs/server.crt", homeDir))
+		cmd = append(cmd, fmt.Sprintf("sudo mv %s/ssl.key /etc/ssl/private/server.key", homeDir))
+	}
+
+	return cmd
 }
 
 func getNginxConfigTemplate() string {
