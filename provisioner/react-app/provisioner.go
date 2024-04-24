@@ -80,10 +80,12 @@ func getCommands(homeDir string) []string {
 		"sudo apt install software-properties-common -y",
 		"sudo apt install -y nginx",
 
-		"curl -fsSL https://get.docker.com -o get-docker.sh",
-		"sh get-docker.sh",
-		"git clone https://github.com/paion-data/docker-kong.git",
+		"git clone https://github.com/paion-data/dental-llm-web-app",
+		"cd dental-llm-web-app",
+		"yarn",
+		"yarn build",
 	}
+	cmd = append(cmd, fmt.Sprintf("sudo mv dist/ %s/", homeDir))
 
 	if !skipConfigSSL {
 		cmd = append(cmd, fmt.Sprintf("sudo mv %s/nginx-ssl.conf /etc/nginx/sites-enabled/default", homeDir))
@@ -109,6 +111,17 @@ server {
     location / {
         try_files $uri $uri/ =404;
     }
+}
+
+server {
+    if ($host = react.domain.com) {
+        return 301 https://$host$request_uri;
+    }
+
+    listen 80 ;
+    listen [::]:80 ;
+    server_name react.domain.com;
+    return 404;
 }
 
 server {
