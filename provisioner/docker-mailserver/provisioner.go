@@ -8,14 +8,15 @@ package dockerMailserver
 import (
 	"context"
 	"fmt"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner"
+	"path/filepath"
+	"strings"
+
 	"github.com/hashicorp/hcl/v2/hcldec"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-sdk/tmp"
-	"path/filepath"
-	"strings"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner"
 )
 
 type Config struct {
@@ -98,7 +99,7 @@ func (p *Provisioner) ProvisionUpload(ui packersdk.Ui, communicator packersdk.Co
 		return fmt.Errorf("error interpolating destination: %s", err)
 	}
 
-	return provisioner.ProvisionUpload(ui, communicator, src, dst)
+	return provisioner.ProvisionUpload(ui, communicator, src, dst, p.config.ctx)
 }
 
 func getHomeDir(configValue string) string {
