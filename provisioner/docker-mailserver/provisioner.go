@@ -1,4 +1,4 @@
-// Copyright (c) Jiaqi Liu
+// Copyright (c) Paion Data
 // SPDX-License-Identifier: MPL-2.0
 
 //go:generate packer-sdc mapstructure-to-hcl2 -type Config

@@ -1,7 +1,7 @@
-// Copyright (c) Jiaqi Liu
+// Copyright (c) Paion Data
 // SPDX-License-Identifier: MPL-2.0
 
-//go:generate packer-sdc mapstructure-to-hcl2 -type Config,NginxConfig
+//go:generate packer-sdc mapstructure-to-hcl2 -type Config
 
 package reactApp
 
@@ -18,10 +18,10 @@ import (
 )
 
 type Config struct {
-	SslCertSource    string `mapstructure:"sslCertSource" required:"false"`
-	SslCertKeySource string `mapstructure:"sslCertKeySource" required:"false"`
+	SslCertSource    string `mapstructure:"sslCertSource" required:"true"`
+	SslCertKeySource string `mapstructure:"sslCertKeySource" required:"true"`
 
-	ReactAppDomain string `mapstructure:"ReactAppDomain" required:"false"`
+	ReactAppDomain string `mapstructure:"ReactAppDomain" required:"true"`
 	HomeDir        string `mapstructure:"homeDir" required:"false"`
 
 	ctx interpolate.Context
@@ -79,13 +79,7 @@ func getCommands(homeDir string) []string {
 		"sudo apt update && sudo apt upgrade -y",
 		"sudo apt install software-properties-common -y",
 		"sudo apt install -y nginx",
-
-		"git clone https://github.com/paion-data/dental-llm-web-app",
-		"cd dental-llm-web-app",
-		"yarn",
-		"yarn build",
 	}
-	cmd = append(cmd, fmt.Sprintf("sudo mv dist/ %s/", homeDir))
 
 	if !skipConfigSSL {
 		cmd = append(cmd, fmt.Sprintf("sudo mv %s/nginx-ssl.conf /etc/nginx/sites-enabled/default", homeDir))
