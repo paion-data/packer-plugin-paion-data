@@ -79,6 +79,8 @@ func getCommands(homeDir string) []string {
 		"sudo apt update && sudo apt upgrade -y",
 		"sudo apt install software-properties-common -y",
 		"sudo apt install -y nginx",
+		"sudo apt install -y nodejs",
+		"sudo apt install -y serve",
 	}
 
 	if !skipConfigSSL {
@@ -92,21 +94,6 @@ func getCommands(homeDir string) []string {
 
 func getNginxConfigTemplate() string {
 	return `
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-
-    index index.html index.htm index.nginx-debian.html;
-
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-
 server {
     if ($host = react.domain.com) {
         return 301 https://$host$request_uri;
