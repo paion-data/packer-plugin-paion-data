@@ -49,19 +49,40 @@ var skipConfigSSL bool
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	p.config.HomeDir = util.GetHomeDir(p.config.HomeDir)
 
-	nginxConfig := strings.Replace(getNginxConfigTemplate(), "react.domain.com", p.config.ReactAppDomain, -1)
-
-	var err error
-	skipConfigSSL, err = util.ConfigNginxSSL(ui, communicator, p.config.ctx, util.NginxConfig{
-		SslCertSource:    p.config.SslCertSource,
-		SslCertKeySource: p.config.SslCertKeySource,
-		Domain:           p.config.ReactAppDomain,
-		HomeDir:          p.config.HomeDir,
-		NginxConfig:      nginxConfig,
-	})
-
+	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.ReactAppDomain)
 	if err != nil {
 		return err
+	}
+
+	if !skip {
+		nginxConfig := strings.Replace(getNginxConfigTemplate(), "react.domain.com", p.config.ReactAppDomain, -1)
+		nginxConfigMap, err := util.ConfigNginxSSL(ui, communicator, util.NginxConfig{
+			SslCertSource:    p.config.SslCertSource,
+			SslCertKeySource: p.config.SslCertKeySource,
+			HomeDir:          p.config.HomeDir,
+			NginxConfig:      nginxConfig,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		for source, destination := range nginxConfigMap {
+			src, err := interpolate.Render(source, &p.config.ctx)
+			if err != nil {
+				return fmt.Errorf("error interpolating source: %s", err)
+			}
+
+			dst, err := interpolate.Render(destination, &p.config.ctx)
+			if err != nil {
+				return fmt.Errorf("error interpolating destination: %s", err)
+			}
+
+			err = util.ProvisionUpload(ui, communicator, src, dst)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	for _, command := range getCommands(p.config.HomeDir) {
@@ -79,6 +100,9 @@ func getCommands(homeDir string) []string {
 		"sudo apt update && sudo apt upgrade -y",
 		"sudo apt install software-properties-common -y",
 		"sudo apt install -y nginx",
+
+		"sudo apt install -y curl",
+		"curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -",
 		"sudo apt install -y nodejs",
 		"sudo apt install -y serve",
 	}

@@ -49,19 +49,40 @@ var skipConfigSSL bool
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	p.config.HomeDir = util.GetHomeDir(p.config.HomeDir)
 
-	nginxConfig := strings.Replace(getNginxConfigTemplate(), "kong.domain.com", p.config.KongApiGatewayDomain, -1)
-
-	var err error
-	skipConfigSSL, err = util.ConfigNginxSSL(ui, communicator, p.config.ctx, util.NginxConfig{
-		SslCertSource:    p.config.SslCertSource,
-		SslCertKeySource: p.config.SslCertKeySource,
-		Domain:           p.config.KongApiGatewayDomain,
-		HomeDir:          p.config.HomeDir,
-		NginxConfig:      nginxConfig,
-	})
-
+	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.KongApiGatewayDomain)
 	if err != nil {
 		return err
+	}
+
+	if !skip {
+		nginxConfig := strings.Replace(getNginxConfigTemplate(), "kong.domain.com", p.config.KongApiGatewayDomain, -1)
+		nginxConfigMap, err := util.ConfigNginxSSL(ui, communicator, util.NginxConfig{
+			SslCertSource:    p.config.SslCertSource,
+			SslCertKeySource: p.config.SslCertKeySource,
+			HomeDir:          p.config.HomeDir,
+			NginxConfig:      nginxConfig,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		for source, destination := range nginxConfigMap {
+			src, err := interpolate.Render(source, &p.config.ctx)
+			if err != nil {
+				return fmt.Errorf("error interpolating source: %s", err)
+			}
+
+			dst, err := interpolate.Render(destination, &p.config.ctx)
+			if err != nil {
+				return fmt.Errorf("error interpolating destination: %s", err)
+			}
+
+			err = util.ProvisionUpload(ui, communicator, src, dst)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	for _, command := range getCommands(p.config.HomeDir) {

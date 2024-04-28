@@ -99,7 +99,7 @@ func (p *Provisioner) ProvisionUpload(ui packersdk.Ui, communicator packersdk.Co
 		return fmt.Errorf("error interpolating destination: %s", err)
 	}
 
-	return provisioner.ProvisionUpload(ui, communicator, src, dst, p.config.ctx)
+	return provisioner.ProvisionUpload(ui, communicator, src, dst)
 }
 
 func getHomeDir(configValue string) string {

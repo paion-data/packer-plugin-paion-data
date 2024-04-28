@@ -22,7 +22,7 @@ func TestSkipConfigSSL(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			skip, err := skipConfigSSL(tc.sslCertSource, tc.sslCertKeySource, tc.domain)
+			skip, err := SkipConfigSSL(tc.sslCertSource, tc.sslCertKeySource, tc.domain)
 			if skip != tc.expectedSkip {
 				t.Errorf("expected %v, got %v", tc.expectedSkip, skip)
 			}
