@@ -27,9 +27,9 @@ func TestConfigNginxSSL(t *testing.T) {
 	}
 
 	for source, destination := range result {
-		v2 := expected[source]
-		if v2 != "" {
-			assert.Equal(t, destination, v2)
+		expectedDestination := expected[source]
+		if expectedDestination != "" {
+			assert.Equal(t, destination, expectedDestination)
 		} else {
 			// valid file content
 			expectedConfig := config.NginxConfig
