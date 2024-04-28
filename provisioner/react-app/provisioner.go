@@ -49,39 +49,32 @@ var skipConfigSSL bool
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	p.config.HomeDir = util.GetHomeDir(p.config.HomeDir)
 
-	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.ReactAppDomain)
+	nginxConfig := strings.Replace(getNginxConfigTemplate(), "react.domain.com", p.config.ReactAppDomain, -1)
+	nginxConfigMap, err := util.ConfigNginxSSL(util.NginxConfig{
+		SslCertSource:    p.config.SslCertSource,
+		SslCertKeySource: p.config.SslCertKeySource,
+		HomeDir:          p.config.HomeDir,
+		NginxConfig:      nginxConfig,
+	})
+
 	if err != nil {
 		return err
 	}
 
-	if !skip {
-		nginxConfig := strings.Replace(getNginxConfigTemplate(), "react.domain.com", p.config.ReactAppDomain, -1)
-		nginxConfigMap, err := util.ConfigNginxSSL(ui, communicator, util.NginxConfig{
-			SslCertSource:    p.config.SslCertSource,
-			SslCertKeySource: p.config.SslCertKeySource,
-			HomeDir:          p.config.HomeDir,
-			NginxConfig:      nginxConfig,
-		})
-
+	for source, destination := range nginxConfigMap {
+		src, err := interpolate.Render(source, &p.config.ctx)
 		if err != nil {
-			return err
+			return fmt.Errorf("error interpolating source: %s", err)
 		}
 
-		for source, destination := range nginxConfigMap {
-			src, err := interpolate.Render(source, &p.config.ctx)
-			if err != nil {
-				return fmt.Errorf("error interpolating source: %s", err)
-			}
+		dst, err := interpolate.Render(destination, &p.config.ctx)
+		if err != nil {
+			return fmt.Errorf("error interpolating destination: %s", err)
+		}
 
-			dst, err := interpolate.Render(destination, &p.config.ctx)
-			if err != nil {
-				return fmt.Errorf("error interpolating destination: %s", err)
-			}
-
-			err = util.ProvisionUpload(ui, communicator, src, dst)
-			if err != nil {
-				return err
-			}
+		err = util.ProvisionUpload(ui, communicator, src, dst)
+		if err != nil {
+			return err
 		}
 	}
 

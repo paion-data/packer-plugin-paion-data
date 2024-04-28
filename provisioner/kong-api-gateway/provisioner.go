@@ -56,7 +56,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 
 	if !skip {
 		nginxConfig := strings.Replace(getNginxConfigTemplate(), "kong.domain.com", p.config.KongApiGatewayDomain, -1)
-		nginxConfigMap, err := util.ConfigNginxSSL(ui, communicator, util.NginxConfig{
+		nginxConfigMap, err := util.ConfigNginxSSL(util.NginxConfig{
 			SslCertSource:    p.config.SslCertSource,
 			SslCertKeySource: p.config.SslCertKeySource,
 			HomeDir:          p.config.HomeDir,

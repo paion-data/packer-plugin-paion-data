@@ -1,8 +1,43 @@
 package provisioner
 
 import (
+	"github.com/stretchr/testify/assert"
+	"os"
+	"path/filepath"
 	"testing"
 )
+
+func TestConfigNginxSSL(t *testing.T) {
+	tempDir := t.TempDir()
+
+	config := NginxConfig{
+		HomeDir:          tempDir,
+		NginxConfig:      "user nginx;",
+		SslCertSource:    "path/to/source.crt",
+		SslCertKeySource: "path/to/source.key",
+	}
+
+	result, err := ConfigNginxSSL(config)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	expected := map[string]string{
+		"path/to/source.crt": filepath.Join(tempDir, "ssl.crt"),
+		"path/to/source.key": filepath.Join(tempDir, "ssl.key"),
+	}
+
+	for source, destination := range result {
+		v2 := expected[source]
+		if v2 != "" {
+			assert.Equal(t, destination, v2)
+		} else {
+			// valid file content
+			expectedConfig := config.NginxConfig
+			content, _ := os.ReadFile(source)
+			assert.Equal(t, expectedConfig, string(content))
+		}
+	}
+}
 
 func TestSkipConfigSSL(t *testing.T) {
 	cases := []struct {

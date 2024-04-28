@@ -18,7 +18,8 @@ type NginxConfig struct {
 	NginxConfig string
 }
 
-func ConfigNginxSSL(ui packersdk.Ui, communicator packersdk.Communicator, config NginxConfig) (map[string]string, error) {
+// ConfigNginxSSL creates a map of source and destination files for SSL configuration
+func ConfigNginxSSL(config NginxConfig) (map[string]string, error) {
 
 	sslCertDestination := filepath.Join(config.HomeDir, "ssl.crt")
 	sslCertKeyDestination := filepath.Join(config.HomeDir, "ssl.key")
