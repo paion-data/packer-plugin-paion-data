@@ -7,9 +7,10 @@ import (
 	"fmt"
 	"os"
 
-	dockerMailServerProv "github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/docker-mailserver"
-	kongApiGatewayProv "github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/kong-api-gateway"
-	pluginVersion "github.com/QubitPi/packer-plugin-hashicorp-aws/version"
+	dockerMailServerProv "github.com/paion-data/packer-plugin-paion-data/provisioner/docker-mailserver"
+	kongApiGatewayProv "github.com/paion-data/packer-plugin-paion-data/provisioner/kong-api-gateway"
+	reactAppProv "github.com/paion-data/packer-plugin-paion-data/provisioner/react-app"
+	pluginVersion "github.com/paion-data/packer-plugin-paion-data/version"
 
 	"github.com/hashicorp/packer-plugin-sdk/plugin"
 )
@@ -18,6 +19,7 @@ func main() {
 	pps := plugin.NewSet()
 	pps.RegisterProvisioner("docker-mailserver-provisioner", new(dockerMailServerProv.Provisioner))
 	pps.RegisterProvisioner("kong-api-gateway-provisioner", new(kongApiGatewayProv.Provisioner))
+	pps.RegisterProvisioner("react-app-provisioner", new(reactAppProv.Provisioner))
 	pps.SetVersion(pluginVersion.PluginVersion)
 	err := pps.Run()
 	if err != nil {

@@ -1,4 +1,4 @@
-// Copyright (c) Jiaqi Liu
+// Copyright (c) Paion Data
 // SPDX-License-Identifier: MPL-2.0
 
 //go:generate packer-sdc mapstructure-to-hcl2 -type Config
@@ -8,14 +8,15 @@ package dockerMailserver
 import (
 	"context"
 	"fmt"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner"
+	"path/filepath"
+	"strings"
+
 	"github.com/hashicorp/hcl/v2/hcldec"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-sdk/tmp"
-	"path/filepath"
-	"strings"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner"
 )
 
 type Config struct {

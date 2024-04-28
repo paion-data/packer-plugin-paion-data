@@ -1,4 +1,4 @@
-// Copyright (c) Jiaqi Liu
+// Copyright (c) Paion Data
 // SPDX-License-Identifier: MPL-2.0
 
 //go:generate packer-sdc mapstructure-to-hcl2 -type Config
@@ -8,15 +8,13 @@ package kongApiGateway
 import (
 	"context"
 	"fmt"
-	"path/filepath"
 	"strings"
 
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner"
 	"github.com/hashicorp/hcl/v2/hcldec"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
-	"github.com/hashicorp/packer-plugin-sdk/tmp"
+	util "github.com/paion-data/packer-plugin-paion-data/provisioner"
 )
 
 type Config struct {
@@ -46,55 +44,44 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 	return nil
 }
 
-func (p *Provisioner) skipConfigSSL() (bool, error) {
-	if p.config.SslCertSource != "" && p.config.SslCertKeySource != "" && p.config.KongApiGatewayDomain != "" {
-		return false, nil
-	}
-	if p.config.SslCertSource == "" && p.config.SslCertKeySource == "" && p.config.KongApiGatewayDomain == "" {
-		return true, nil
-	}
-	return false, fmt.Errorf("sslCertSource, sslCertKeySource and kongApiGatewayDomain must be set together")
-}
-
 var skipConfigSSL bool
 
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
-	p.config.HomeDir = getHomeDir(p.config.HomeDir)
-	var err error
-	skipConfigSSL, err = p.skipConfigSSL()
+	p.config.HomeDir = util.GetHomeDir(p.config.HomeDir)
 
+	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.KongApiGatewayDomain)
 	if err != nil {
 		return err
 	}
 
-	if !skipConfigSSL {
-		fmt.Println("config ssl")
-		sslCertDestination := fmt.Sprintf(filepath.Join(p.config.HomeDir, "ssl.crt"))
-		err := p.ProvisionUpload(ui, communicator, p.config.SslCertSource, sslCertDestination)
-		if err != nil {
-			return fmt.Errorf("error uploading '%s' to '%s': %s", p.config.SslCertSource, sslCertDestination, err)
-		}
-
-		sslCertKeyDestination := fmt.Sprintf(filepath.Join(p.config.HomeDir, "ssl.key"))
-		err = p.ProvisionUpload(ui, communicator, p.config.SslCertKeySource, sslCertKeyDestination)
-		if err != nil {
-			return fmt.Errorf("error uploading '%s' to '%s': %s", p.config.SslCertKeySource, sslCertKeyDestination, err)
-		}
-
+	if !skip {
 		nginxConfig := strings.Replace(getNginxConfigTemplate(), "kong.domain.com", p.config.KongApiGatewayDomain, -1)
-		file, err := tmp.File("nginx-config-file")
+		nginxConfigMap, err := util.ConfigNginxSSL(util.NginxConfig{
+			SslCertSource:    p.config.SslCertSource,
+			SslCertKeySource: p.config.SslCertKeySource,
+			HomeDir:          p.config.HomeDir,
+			NginxConfig:      nginxConfig,
+		})
+
 		if err != nil {
 			return err
 		}
-		defer file.Close()
-		if _, err := file.WriteString(nginxConfig); err != nil {
-			return err
-		}
-		nginxConfig = ""
-		nginxDst := fmt.Sprintf(filepath.Join(p.config.HomeDir, "nginx-ssl.conf"))
-		err = p.ProvisionUpload(ui, communicator, file.Name(), nginxDst)
-		if err != nil {
-			return fmt.Errorf("error uploading '%s' to '%s': %s", file.Name(), nginxDst, err)
+
+		for source, destination := range nginxConfigMap {
+			src, err := interpolate.Render(source, &p.config.ctx)
+			if err != nil {
+				return fmt.Errorf("error interpolating source: %s", err)
+			}
+
+			dst, err := interpolate.Render(destination, &p.config.ctx)
+			if err != nil {
+				return fmt.Errorf("error interpolating destination: %s", err)
+			}
+
+			err = util.ProvisionUpload(ui, communicator, src, dst)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -106,28 +93,6 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 	}
 
 	return nil
-}
-
-func (p *Provisioner) ProvisionUpload(ui packersdk.Ui, communicator packersdk.Communicator, source string, destination string) error {
-	src, err := interpolate.Render(source, &p.config.ctx)
-	if err != nil {
-		return fmt.Errorf("error interpolating source: %s", err)
-	}
-
-	dst, err := interpolate.Render(destination, &p.config.ctx)
-	if err != nil {
-		return fmt.Errorf("error interpolating destination: %s", err)
-	}
-
-	return provisioner.ProvisionUpload(ui, communicator, src, dst)
-}
-
-func getHomeDir(configValue string) string {
-	if configValue == "" {
-		return "/home/ubuntu"
-	}
-
-	return configValue
 }
 
 func getCommands(homeDir string) []string {

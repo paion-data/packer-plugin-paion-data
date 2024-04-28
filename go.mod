@@ -1,4 +1,4 @@
-module github.com/QubitPi/packer-plugin-hashicorp-aws
+module github.com/paion-data/packer-plugin-paion-data
 
 go 1.20
 
@@ -53,6 +53,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
