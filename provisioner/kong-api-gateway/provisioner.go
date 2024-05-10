@@ -47,7 +47,8 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 var skipConfigSSL bool
 
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
-	p.config.HomeDir = util.GetHomeDir(p.config.HomeDir)
+	var err error
+	p.config.HomeDir, err = util.GetHomeDir(p.config.HomeDir)
 
 	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.KongApiGatewayDomain)
 	if err != nil {
@@ -103,10 +104,11 @@ func getCommands(homeDir string) []string {
 		"curl -fsSL https://get.docker.com -o get-docker.sh",
 		"sh get-docker.sh",
 
-		"git clone https://github.com/paion-data/docker-kong.git",
-
 		"sudo apt install -y nginx",
 	}
+
+	cmd = append(cmd, fmt.Sprintf("cd %s", homeDir))
+	cmd = append(cmd, "git clone https://github.com/paion-data/docker-kong.git")
 
 	if !skipConfigSSL {
 		cmd = append(cmd, fmt.Sprintf("sudo mv %s/nginx-ssl.conf /etc/nginx/sites-enabled/default", homeDir))
