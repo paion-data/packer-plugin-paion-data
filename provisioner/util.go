@@ -8,6 +8,7 @@ import (
 
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/tmp"
+	"os/user"
 )
 
 type NginxConfig struct {
@@ -99,10 +100,26 @@ func SkipConfigSSL(sslCertSource string, sslCertKeySource string, domain string)
 	return false, fmt.Errorf("sslCertSource, sslCertKeySource and domian must be set together")
 }
 
-func GetHomeDir(configValue string) string {
-	if configValue == "" {
-		return "/root"
+// GetHomeDir create a directory if it does not exist
+func GetHomeDir(homeDir string) (string, error) {
+	if homeDir == "" {
+		u, err := user.Current()
+		if err != nil {
+			return "", err
+		}
+		homeDir = u.HomeDir
 	}
 
-	return configValue
+	stat, err := os.Stat(homeDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", fmt.Errorf("directory '%s' does not exist", homeDir)
+		} else {
+			return homeDir, err
+		}
+	} else if !stat.IsDir() {
+		return "", fmt.Errorf("'%s' is not a directory", homeDir)
+	}
+
+	return homeDir, nil
 }

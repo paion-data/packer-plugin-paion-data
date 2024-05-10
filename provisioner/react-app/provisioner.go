@@ -47,7 +47,8 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 var skipConfigSSL bool
 
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
-	p.config.HomeDir = util.GetHomeDir(p.config.HomeDir)
+	var err error
+	p.config.HomeDir, err = util.GetHomeDir(p.config.HomeDir)
 
 	nginxConfig := strings.Replace(getNginxConfigTemplate(), "react.domain.com", p.config.ReactAppDomain, -1)
 	nginxConfigMap, err := util.ConfigNginxSSL(util.NginxConfig{

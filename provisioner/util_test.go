@@ -3,6 +3,7 @@ package provisioner
 import (
 	"github.com/stretchr/testify/assert"
 	"os"
+	"os/user"
 	"path/filepath"
 	"testing"
 )
@@ -69,18 +70,30 @@ func TestSkipConfigSSL(t *testing.T) {
 }
 
 func TestGetHomeDir(t *testing.T) {
+	tempFile, err := os.CreateTemp("", "tempfile")
+	if err != nil {
+		t.Errorf("error creating file: %v", err)
+	}
+	u, err := user.Current()
+	if err != nil {
+		t.Errorf("error getting current user: %v", err)
+	}
+
 	cases := []struct {
 		name         string
 		configValue  string
 		expectedHome string
 	}{
-		{"empty input", "", "/root"},
-		{"non-empty input", "/custom/home/dir", "/custom/home/dir"},
+		{"empty input", "", u.HomeDir},
+		{"non-empty input", "/", "/"},
+		{"not-dir input", tempFile.Name(), ""},
+		{"non-existent input", "/tmp/not-existent", ""},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := GetHomeDir(tc.configValue)
+			result, _ := GetHomeDir(tc.configValue)
+
 			if result != tc.expectedHome {
 				t.Errorf("expected %q, got %q", tc.expectedHome, result)
 			}
