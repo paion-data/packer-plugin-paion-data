@@ -91,7 +91,6 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 
 func getCommands(homeDir string) []string {
 	cmd := []string{
-		"sudo apt update && sudo apt upgrade -y",
 		"sudo apt install software-properties-common -y",
 		"sudo apt install -y nginx",
 
