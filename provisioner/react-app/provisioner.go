@@ -91,6 +91,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 
 func getCommands(homeDir string) []string {
 	cmd := []string{
+		"sudo sed -i 's/mirrors.aliyun.com/archive.ubuntu.com/g' /etc/apt/sources.list",
 		"sudo apt update && sudo apt upgrade -y",
 		"sudo apt install software-properties-common -y",
 		"sudo apt install -y nginx",
@@ -98,7 +99,7 @@ func getCommands(homeDir string) []string {
 		"sudo apt install -y curl",
 		"curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -",
 		"sudo apt install -y nodejs",
-		"sudo apt install -y serve",
+		"npm install -g serve",
 	}
 
 	if !skipConfigSSL {
