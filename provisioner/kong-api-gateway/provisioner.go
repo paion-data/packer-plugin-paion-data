@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	util "github.com/paion-data/packer-plugin-paion-data/provisioner"
-	jwt_util "github.com/paion-data/packer-plugin-paion-data/provisioner"
+	jwtUtil "github.com/paion-data/packer-plugin-paion-data/provisioner"
 )
 
 type Config struct {
@@ -75,7 +75,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		}
 
 		for source, destination := range nginxConfigMap {
-			err = upload(source, destination, p, ui, communicator)
+			err := upload(source, destination, p, ui, communicator)
 			if err != nil {
 				return err
 			}
@@ -89,7 +89,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		defer file.Close()
 
 		// get the public key
-		publicKey, err := jwt_util.GetJWKSPublicKeyPEM(p.config.JwksUrl)
+		publicKey, err := jwtUtil.GetJWKSPublicKeyPEM(p.config.JwksUrl)
 		if err != nil {
 			return err
 		}
