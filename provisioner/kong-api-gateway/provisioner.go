@@ -75,7 +75,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		}
 
 		for source, destination := range nginxConfigMap {
-			err := upload(source, destination, p, ui, communicator)
+			err := uploadFile(source, destination, p, ui, communicator)
 			if err != nil {
 				return err
 			}
@@ -105,10 +105,10 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 			return err
 		}
 
-		source := filepath.Join(currentDir, "publicKey.txt")
-		destination := filepath.Join(p.config.HomeDir, "publicKey.txt")
+		source := filepath.Join(currentDir, "publicKey")
+		destination := filepath.Join(p.config.HomeDir, "publicKey")
 
-		err = upload(source, destination, p, ui, communicator)
+		err = uploadFile(source, destination, p, ui, communicator)
 		if err != nil {
 			return err
 		}
@@ -124,7 +124,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 	return nil
 }
 
-func upload(source string, destination string, p *Provisioner, ui packersdk.Ui, communicator packersdk.Communicator) error {
+func uploadFile(source string, destination string, p *Provisioner, ui packersdk.Ui, communicator packersdk.Communicator) error {
 	src, err := interpolate.Render(source, &p.config.ctx)
 	if err != nil {
 		return fmt.Errorf("error interpolating source: %s", err)
