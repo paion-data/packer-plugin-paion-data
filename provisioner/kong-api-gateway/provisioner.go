@@ -8,6 +8,8 @@ package kongApiGateway
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
@@ -23,6 +25,8 @@ type Config struct {
 
 	KongApiGatewayDomain string `mapstructure:"kongApiGatewayDomain" required:"false"`
 	HomeDir              string `mapstructure:"homeDir" required:"false"`
+
+	JwksUrl string `mapstructure:"jwksUrl" required:"false"`
 
 	ctx interpolate.Context
 }
@@ -49,6 +53,9 @@ var skipConfigSSL bool
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	var err error
 	p.config.HomeDir, err = util.GetHomeDir(p.config.HomeDir)
+	if err != nil {
+		return err
+	}
 
 	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.KongApiGatewayDomain)
 	if err != nil {
@@ -69,20 +76,42 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		}
 
 		for source, destination := range nginxConfigMap {
-			src, err := interpolate.Render(source, &p.config.ctx)
-			if err != nil {
-				return fmt.Errorf("error interpolating source: %s", err)
-			}
-
-			dst, err := interpolate.Render(destination, &p.config.ctx)
-			if err != nil {
-				return fmt.Errorf("error interpolating destination: %s", err)
-			}
-
-			err = util.ProvisionUpload(ui, communicator, src, dst)
+			err := uploadFile(source, destination, p, ui, communicator)
 			if err != nil {
 				return err
 			}
+		}
+
+		// create a file to store the public key
+		file, err := os.Create("publicKey.txt")
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		// get the public key
+		publicKey, err := util.GetJWKSPublicKeyPEM(p.config.JwksUrl)
+		if err != nil {
+			return err
+		}
+
+		// write the public key to the file
+		_, err = file.WriteString(publicKey)
+		if err != nil {
+			return err
+		}
+
+		currentDir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		source := filepath.Join(currentDir, "publicKey")
+		destination := filepath.Join(p.config.HomeDir, "publicKey")
+
+		err = uploadFile(source, destination, p, ui, communicator)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -91,6 +120,25 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func uploadFile(source string, destination string, p *Provisioner, ui packersdk.Ui, communicator packersdk.Communicator) error {
+	src, err := interpolate.Render(source, &p.config.ctx)
+	if err != nil {
+		return fmt.Errorf("error interpolating source: %s", err)
+	}
+
+	dst, err := interpolate.Render(destination, &p.config.ctx)
+	if err != nil {
+		return fmt.Errorf("error interpolating destination: %s", err)
+	}
+
+	err = util.ProvisionUpload(ui, communicator, src, dst)
+	if err != nil {
+		return err
 	}
 
 	return nil
