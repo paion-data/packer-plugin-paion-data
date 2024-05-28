@@ -17,7 +17,6 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	util "github.com/paion-data/packer-plugin-paion-data/provisioner"
-	jwtUtil "github.com/paion-data/packer-plugin-paion-data/provisioner"
 )
 
 type Config struct {
@@ -28,7 +27,6 @@ type Config struct {
 	HomeDir              string `mapstructure:"homeDir" required:"false"`
 
 	JwksUrl string `mapstructure:"jwksUrl" required:"false"`
-	JwtIss  string `mapstructure:"jwtIss" required:"false"`
 
 	ctx interpolate.Context
 }
@@ -55,6 +53,9 @@ var skipConfigSSL bool
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	var err error
 	p.config.HomeDir, err = util.GetHomeDir(p.config.HomeDir)
+	if err != nil {
+		return err
+	}
 
 	skip, err := util.SkipConfigSSL(p.config.SslCertSource, p.config.SslCertKeySource, p.config.KongApiGatewayDomain)
 	if err != nil {
@@ -89,7 +90,7 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		defer file.Close()
 
 		// get the public key
-		publicKey, err := jwtUtil.GetJWKSPublicKeyPEM(p.config.JwksUrl)
+		publicKey, err := util.GetJWKSPublicKeyPEM(p.config.JwksUrl)
 		if err != nil {
 			return err
 		}
