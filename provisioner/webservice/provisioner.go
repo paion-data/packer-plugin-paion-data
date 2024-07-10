@@ -8,13 +8,13 @@ package webservice
 import (
 	"context"
 	"fmt"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/file-provisioner"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/shell"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/ssl-provisioner"
 	"github.com/hashicorp/hcl/v2/hcldec"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/file-provisioner"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/shell"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/ssl-provisioner"
 	"path/filepath"
 )
 

@@ -14,10 +14,10 @@ The `react` provisioner is used to install a compiled React-based APP in AWS AMI
    If it is relative, it is relative to the working directory when Packer is executed.
 - `appDomain` (string) - the SSL-enabled domain that will serve the deployed HTTP React APP instance.
 - `sslCertBase64` (string) - is a __base64 encoded__ string of the content of
-  [SSL certificate file](https://hashicorp-aws.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
+  [SSL certificate file](https://immutable-infrastructure.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
   example `app.mycompany.com` given the `appDomain` is `app.mycompany.com`.
 - `sslCertKeyBase64` (string) - is a __base64 encoded__ string of the content of
-  [SSL certificate key file](https://hashicorp-aws.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
+  [SSL certificate key file](https://immutable-infrastructure.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
   example `app.mycompany.com` given the `appDomain` is `app.mycompany.com`.
 
 
@@ -51,8 +51,8 @@ packer {
   }
 }
 
-source "amazon-ebs" "hashicorp-aws" {
-  ami_name              = "packer-plugin-hashicorp-aws-acc-test-ami-react"
+source "amazon-ebs" "paion-data" {
+  ami_name              = "packer-plugin-paion-data-acc-test-ami-react"
   force_deregister      = "true"
   force_delete_snapshot = "true"
 
@@ -78,10 +78,10 @@ source "amazon-ebs" "hashicorp-aws" {
 
 build {
   sources = [
-    "source.amazon-ebs.hashicorp-aws"
+    "source.amazon-ebs.paion-data"
   ]
 
-  provisioner "hashicorp-aws-react-provisioner" {
+  provisioner "paion-data-react-provisioner" {
     distSource       = "./dist"
     homeDir          = "/home/ubuntu"
     sslCertBase64    = "YXNkZnNnaHRkeWhyZXJ3ZGZydGV3ZHNmZ3RoeTY0cmV3ZGZyZWd0cmV3d2ZyZw=="

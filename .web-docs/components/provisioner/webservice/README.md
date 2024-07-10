@@ -44,8 +44,8 @@ packer {
   }
 }
 
-source "amazon-ebs" "hashicorp-aws" {
-  ami_name              = "packer-plugin-hashicorp-aws-acc-test-ami"
+source "amazon-ebs" "paion-data" {
+  ami_name              = "packer-plugin-paion-data-acc-test-ami"
   force_deregister      = "true"
   force_delete_snapshot = "true"
 
@@ -71,10 +71,10 @@ source "amazon-ebs" "hashicorp-aws" {
 
 build {
   sources = [
-    "source.amazon-ebs.hashicorp-aws"
+    "source.amazon-ebs.paion-data"
   ]
 
-  provisioner "hashicorp-aws-webservice-provisioner" {
+  provisioner "paion-data-webservice-provisioner" {
     homeDir   = "/home/ubuntu"
     warSource = "my-webservice.war"
   }
