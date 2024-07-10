@@ -84,6 +84,6 @@ jobs:
 
   release:
     needs: [acceptance-tests]
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' && github.repository != 'QubitPi/hashicorp-packer-plugin-scaffolding' }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
