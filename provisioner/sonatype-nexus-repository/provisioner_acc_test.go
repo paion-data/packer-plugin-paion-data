@@ -28,7 +28,7 @@ func TestAccSonatypeNexusRepositoryProvisioner(t *testing.T) {
 			return nil
 		},
 		Template: testProvisionerHCL2Docker,
-		Type:     "hashicorp-aws-sonatype-nexus-repository-provisioner",
+		Type:     "paion-data-sonatype-nexus-repository-provisioner",
 		Check: func(buildCommand *exec.Cmd, logfile string) error {
 			if buildCommand.ProcessState != nil {
 				if buildCommand.ProcessState.ExitCode() != 0 {
@@ -53,7 +53,7 @@ func TestAccSonatypeNexusRepositoryProvisioner(t *testing.T) {
 				t.Fatalf("Acceptance tests for %s failed. Please search for '%s' in log file at %s", "sonatype-nexus-repository provisioner", errorString, logfile)
 			}
 
-			provisionerOutputLog := "docker.hashicorp-aws: Exported Docker file:"
+			provisionerOutputLog := "docker.paion-data: Exported Docker file:"
 			if matched, _ := regexp.MatchString(provisionerOutputLog+".*", logsString); !matched {
 				t.Fatalf("logs doesn't contain expected output %q", logsString)
 			}

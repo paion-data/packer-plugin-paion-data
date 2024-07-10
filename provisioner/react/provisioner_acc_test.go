@@ -34,7 +34,7 @@ func TestAccReactProvisioner(t *testing.T) {
 			return nil
 		},
 		Template: strings.Replace(testProvisionerHCL2Docker, "/my/path/to/dist", tempFile.Name(), -1),
-		Type:     "hashicorp-aws-react-provisioner",
+		Type:     "paion-data-react-provisioner",
 		Check: func(buildCommand *exec.Cmd, logfile string) error {
 			if buildCommand.ProcessState != nil {
 				if buildCommand.ProcessState.ExitCode() != 0 {
@@ -59,7 +59,7 @@ func TestAccReactProvisioner(t *testing.T) {
 				t.Fatalf("Acceptance tests for %s failed. Please search for '%s' in log file at %s", "react provisioner", errorString, logfile)
 			}
 
-			provisionerOutputLog := "docker.hashicorp-aws: Exported Docker file:"
+			provisionerOutputLog := "docker.paion-data: Exported Docker file:"
 			if matched, _ := regexp.MatchString(provisionerOutputLog+".*", logsString); !matched {
 				t.Fatalf("logs doesn't contain expected output %q", logsString)
 			}
