@@ -52,14 +52,11 @@ func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicat
 		return err
 	}
 
-	return shell.Provision(ctx, ui, communicator, getCommands(p.config.HomeDir))
+	return shell.Provision(ctx, ui, communicator, getCommands())
 }
 
-func getCommands(homeDir string) []string {
-	return append(
-		getCommandsUpdatingUbuntu(),
-		append(getCommandsInstallingJDK17(), getCommandsInstallingJetty(homeDir)...)...,
-	)
+func getCommands() []string {
+	return append(getCommandsUpdatingUbuntu(), getCommandsInstallingJDK17()...)
 }
 
 func getCommandsUpdatingUbuntu() []string {
@@ -75,21 +72,5 @@ func getCommandsInstallingJDK17() []string {
 		"sudo apt update -y",
 		"sudo apt install openjdk-17-jdk -y",
 		"export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64",
-	}
-}
-
-// Install and configure Jetty (for JDK 17) container
-func getCommandsInstallingJetty(homeDir string) []string {
-	return []string{
-		"export JETTY_VERSION=11.0.15",
-		"wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/$JETTY_VERSION/jetty-home-$JETTY_VERSION.tar.gz",
-		"tar -xzvf jetty-home-$JETTY_VERSION.tar.gz",
-		"rm jetty-home-$JETTY_VERSION.tar.gz",
-		fmt.Sprintf("export JETTY_HOME=%s/jetty-home-$JETTY_VERSION", homeDir),
-		"mkdir jetty-base",
-		"cd jetty-base",
-		"java -jar $JETTY_HOME/start.jar --add-module=annotations,server,http,deploy,servlet,webapp,resources,jsp",
-		fmt.Sprintf("mv %s/ROOT.war webapps/ROOT.war", homeDir),
-		"cd ../",
 	}
 }
