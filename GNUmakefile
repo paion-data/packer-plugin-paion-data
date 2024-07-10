@@ -1,4 +1,4 @@
-NAME=hashicorp-aws
+NAME=paion-data
 BINARY=packer-plugin-${NAME}
 
 COUNT?=1
