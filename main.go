@@ -5,14 +5,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/react"
-	artifactory "github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/sonatype-nexus-repository"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/webservice"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/react"
+	artifactory "github.com/paion-data/packer-plugin-paion-data/provisioner/sonatype-nexus-repository"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/webservice"
 	"os"
 
-	mailserver "github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/docker-mailserver"
-	gateway "github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/kong-api-gateway"
-	pluginVersion "github.com/QubitPi/packer-plugin-hashicorp-aws/version"
+	mailserver "github.com/paion-data/packer-plugin-paion-data/provisioner/docker-mailserver"
+	gateway "github.com/paion-data/packer-plugin-paion-data/provisioner/kong-api-gateway"
+	pluginVersion "github.com/paion-data/packer-plugin-paion-data/version"
 
 	"github.com/hashicorp/packer-plugin-sdk/plugin"
 )

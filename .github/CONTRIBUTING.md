@@ -1,5 +1,5 @@
-Contributing to hashicorp-aws Plugin
-====================================
+Contributing to paion-data Plugin
+=================================
 
 **First:** if you're unsure or afraid of _anything_, just ask or submit the issue or pull request anyway. You won't be
 yelled at for giving your best effort. The worst that can happen is that you'll be politely asked to change something.
@@ -46,30 +46,30 @@ Setting up Go
 -------------
 
 If you have never worked with Go before, you will have to install its runtime in order to build packer with the
-hashicorp-aws plugin.
+paion-data plugin.
 
 This project always releases from the latest version of golang. [Install go](https://golang.org/doc/install#install) to
 properly build from source, you need to have golang >= 1.21
 
-Setting up hashicorp-aws Plugin for Dev
----------------------------------------
+Setting up paion-data Plugin for Dev
+------------------------------------
 
-With Go installed, you can already `go get` the hashicorp-aws plugin and `make dev` in order to compile and test it.
+With Go installed, you can already `go get` the paion-data plugin and `make dev` in order to compile and test it.
 These instructions target POSIX-like environments (macOS, Linux, Cygwin, etc.) so you may need to adjust them for
 Windows or other shells.
 
-1. Download the hashicorp-aws plugin source (and its dependencies) by running
-   `go get github.com/QubitPi/packer-plugin-hashicorp-aws`. This will download the source to
-   `$GOPATH/src/github.com/QubitPi/packer-plugin-hashicorp-aws`.
-2. When working on the hashicorp-aws plugin, first `cd $GOPATH/src/github.com/QubitPi/packer-plugin-hashicorp-aws`
-   so you can run `make dev` and easily access other files. `make dev` will build the packer-plugin-hashicorp-aws binary
+1. Download the paion-data plugin source (and its dependencies) by running
+   `go get github.com/paion-data/packer-plugin-paion-data`. This will download the source to
+   `$GOPATH/src/github.com/paion-data/packer-plugin-paion-data`.
+2. When working on the paion-data plugin, first `cd $GOPATH/src/github.com/paion-data/packer-plugin-paion-data`
+   so you can run `make dev` and easily access other files. `make dev` will build the packer-plugin-paion-data binary
    and install it under `$HOME/.packer.d/plugins/`.
-3. Make your changes to the hashicorp-aws plugin source. You can run `make dev` to build and install locally, and
+3. Make your changes to the paion-data plugin source. You can run `make dev` to build and install locally, and
    `make test` to run unit tests. Any compilation errors will be shown when the binaries are rebuilding. If you don't
-   have `make` you can simply run `go build -o packer-plugin-hashicorp-aws` from the project root, and
-   `mv packer-plugin-hashicorp-aws ~/.packer.d/plugins/packer-plugin-hashicorp-aws` to install the plugin.
-4. After building the hashicorp-aws plugin successfully, use the latest version of Packer to build a machine and verify
-   your changes. In the [example folder](https://github.com/QubitPi/packer-plugin-hashicorp-aws/blob/main/example) we
+   have `make` you can simply run `go build -o packer-plugin-paion-data` from the project root, and
+   `mv packer-plugin-paion-data ~/.packer.d/plugins/packer-plugin-paion-data` to install the plugin.
+4. After building the paion-data plugin successfully, use the latest version of Packer to build a machine and verify
+   your changes. In the [example folder](https://github.com/paion-data/packer-plugin-paion-data/blob/main/example) we
    provide a basic template. Comment out the `packer {}` block to force Packer use the development binary installed in
    the previous step.
 5. If everything works well and the tests pass, run `go fmt ./...` on your code before submitting a pull-request.
@@ -77,7 +77,7 @@ Windows or other shells.
 ### Opening a Pull Request
 
 Thank you for contributing! When you are ready to open a pull-request, you will
-need to [fork the hashicorp-aws plugin](https://github.com/QubitPi/packer-plugin-hashicorp-aws/fork), push your
+need to [fork the paion-data plugin](https://github.com/paion-data/packer-plugin-paion-data/fork), push your
 changes to your fork, and then open a pull-request.
 
 For example, my github username is `myuser`, so I would do the following:
@@ -85,7 +85,7 @@ For example, my github username is `myuser`, so I would do the following:
 ```
 git checkout -b f-my-feature
 # Develop a patch.
-git push https://github.com/myuser/packer-plugin-hashicorp-aws f-my-feature
+git push https://github.com/myuser/packer-plugin-paion-data f-my-feature
 ```
 
 From there, open your fork in your browser to open a new pull-request.
@@ -141,12 +141,12 @@ and please know that we appreciate the time and energy you put into the project.
 
 #### Working on forks
 
-The easiest way to work on a fork is to set it as a remote of the hashicorp-aws plugin project.
+The easiest way to work on a fork is to set it as a remote of the paion-data plugin project.
 
 1. Navigate to the code:
 
    ```shell
-   cd $GOPATH/src/github.com/QubitPi/packer-plugin-hashicorp-aws
+   cd $GOPATH/src/github.com/paion-data/packer-plugin-paion-data
    ```
 
 2. Add the remote by running:
@@ -158,7 +158,7 @@ The easiest way to work on a fork is to set it as a remote of the hashicorp-aws 
    For example:
 
    ```shell
-   git remote add myuser https://github.com/myuser/packer-plugin-hashicorp-aws.git
+   git remote add myuser https://github.com/myuser/packer-plugin-paion-data.git
    ```
 
 3. Checkout a feature branch:
@@ -188,7 +188,7 @@ recommended but not required.
 Use `go get <project>` to add dependencies to the project. See
 [go mod quick start](https://github.com/golang/go/wiki/Modules#quick-start) for examples.
 
-Please only apply the minimal vendor changes to get your PR to work. The hashicorp-aws plugin does not attempt to track
+Please only apply the minimal vendor changes to get your PR to work. The paion-data plugin does not attempt to track
 the latest version for each dependency.
 
 #### HCL2 Spec Code Generation

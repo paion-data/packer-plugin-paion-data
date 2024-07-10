@@ -7,11 +7,11 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/file-provisioner"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/shell"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-sdk/tmp"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/file-provisioner"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/shell"
 	"path/filepath"
 )
 

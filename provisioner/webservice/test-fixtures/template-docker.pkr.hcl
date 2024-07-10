@@ -10,17 +10,17 @@ packer {
   }
 }
 
-source "docker" "hashicorp-aws" {
+source "docker" "paion-data" {
   image  = "jack20191124/packer-plugin-hashicorp-aws-acc-test-base:latest"
   discard = true
 }
 
 build {
   sources = [
-    "source.docker.hashicorp-aws"
+    "source.docker.paion-data"
   ]
 
-  provisioner "hashicorp-aws-webservice-provisioner" {
+  provisioner "paion-data-webservice-provisioner" {
     homeDir   = "/"
     warSource = "my-webservice.war"
   }
