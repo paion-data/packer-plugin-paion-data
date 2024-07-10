@@ -59,38 +59,9 @@ jobs:
           make build
           make test
 
-  docker-image:
-    name: Publish test docker images for acceptance tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: jack20191124
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Push image to DockerHub
-        uses: docker/build-push-action@v3
-        with:
-          context: .github/docker/
-          push: true
-          tags: jack20191124/packer-plugin-hashicorp-aws-acc-test-base:latest
-      - name: Push image Description
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: jack20191124
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: jack20191124/packer-plugin-hashicorp-aws-acc-test-base
-          readme-filepath: .github/docker/README.md
-
   acceptance-tests:
     name: Packer Plugin Acceptance Tests
-    needs: [tests, docker-image]
+    needs: tests
     outputs:
       outcome: ${{ job.status }}
     continue-on-error: true
@@ -103,31 +74,16 @@ jobs:
       - name: Install Packer
         uses: hashicorp/setup-packer@main
       - name: Build plugin
-        run: go build -ldflags="-X github.com/QubitPi/packer-plugin-hashicorp-aws/version.VersionPrerelease=dev" -o packer-plugin-hashicorp-aws
+        run: go build -ldflags="-X github.com/paion-data/packer-plugin-paion-data/version.VersionPrerelease=dev" -o packer-plugin-paion-data
       - name: Install dependencies
-        run: |
-          packer plugins install github.com/hashicorp/amazon
-          packer plugins install github.com/hashicorp/docker
+        run: packer plugins install github.com/hashicorp/docker
       - name: Install plugin
-        run: packer plugins install --path packer-plugin-hashicorp-aws github.com/QubitPi/hashicorp-aws
+        run: packer plugins install --path packer-plugin-paion-data github.com/paion-data/paion-data
       - name: Run all acceptance tests
         run: PACKER_ACC=1 go test -count 1 -v ./... -timeout=120m
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   release:
     needs: [acceptance-tests]
     if: ${{ github.ref == 'refs/heads/master' && github.repository != 'QubitPi/hashicorp-packer-plugin-scaffolding' }}
     uses: ./.github/workflows/release.yml
     secrets: inherit
-
-  slack-notification:
-    name: Send Slack Notification
-    if: github.ref != 'refs/heads/master'
-    needs: acceptance-tests
-    uses: QubitPi/hashicorp-aws/.github/workflows/slack-notification.yml@master
-    with:
-      job-status: ${{ needs.acceptance-tests.outputs.outcome }}
-    secrets:
-      slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}

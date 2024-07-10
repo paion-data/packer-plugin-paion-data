@@ -8,12 +8,12 @@ package artifactory
 import (
 	"bytes"
 	"context"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/shell"
-	"github.com/QubitPi/packer-plugin-hashicorp-aws/provisioner/ssl-provisioner"
 	"github.com/hashicorp/hcl/v2/hcldec"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/shell"
+	"github.com/paion-data/packer-plugin-paion-data/provisioner/ssl-provisioner"
 	"text/template"
 )
 

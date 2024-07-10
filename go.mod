@@ -1,4 +1,4 @@
-module github.com/QubitPi/packer-plugin-hashicorp-aws
+module github.com/paion-data/packer-plugin-paion-data
 
 go 1.20
 

@@ -1,5 +1,5 @@
-Packer Plugin hashicorp-aws
-===========================
+Packer Plugin paion-data
+========================
 
 ![Go Badge][Go Badge]
 [![HashiCorp Packer Badge][HashiCorp Packer Badge]][HashiCorp Packer URL]
@@ -8,8 +8,8 @@ Packer Plugin hashicorp-aws
 ![GitHub Last Commit]
 [![Apache License][Apache License Badge]][Apache License URL]
 
-The hashicorp-aws multi-component plugin can be used with HashiCorp [Packer][HashiCorp Packer] to create images
-supported by [hashicorp-aws]. For the full list of available features for this plugin see [docs](./docs).
+The paion-data multi-component plugin can be used with HashiCorp [Packer][HashiCorp Packer] to create images
+supported by [immutable-infrastructure.com]. For the full list of available features for this plugin see [docs](./docs).
 
 Installation
 ------------
@@ -27,9 +27,9 @@ To install this plugin, copy and paste this code into Packer configuration. Then
 ```hcl
 packer {
   required_plugins {
-    hashicorp-aws = {
+    paion-data = {
       version = ">= 0.0.1"
-      source = "github.com/QubitPi/hashicorp-aws"
+      source = "github.com/paion-data/paion-data"
     }
   }
 }
@@ -38,7 +38,7 @@ packer {
 #### Manual installation
 
 We can find pre-built binary releases of the plugin
-[here](https://github.com/QubitPi/packer-plugin-hashicorp-aws/releases). Once we have downloaded the latest archive
+[here](https://github.com/paion-data/packer-plugin-paion-data/releases). Once we have downloaded the latest archive
 corresponding to our target OS, uncompress it to retrieve the plugin binary file corresponding to our platform. To
 install the plugin, please follow the Packer documentation on
 [installing a plugin][HashiCorp Packer installing a plugin].
@@ -46,7 +46,7 @@ install the plugin, please follow the Packer documentation on
 ### From Sources
 
 If one prefer to build the plugin from sources, clone the GitHub repository locally and run the command `make build`
-from the root directory. Upon successful compilation, a `packer-plugin-hashicorp-aws` plugin binary file can be found in
+from the root directory. Upon successful compilation, a `packer-plugin-paion-data` plugin binary file can be found in
 the root directory. To install the compiled plugin, please follow the official Packer documentation on
 [installing a plugin][HashiCorp Packer installing a plugin].
 
@@ -58,11 +58,11 @@ directory.
 Contributing
 ------------
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for best practices and instructions on contributing to hashicorp-aws
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for best practices and instructions on contributing to paion-data
 Plugin.
 
-Developing hashicorp-aws Plugin
--------------------------------
+Developing paion-data Plugin
+----------------------------
 
 ### The Go Workspace
 
@@ -80,22 +80,22 @@ export PATH=$PATH:$GOPATH/bin
 1. Clone this GitHub repository locally:
 
    ```shell
-   git clone git@github.com:QubitPi/packer-plugin-hashicorp-aws.git
-   cd packer-plugin-hashicorp-aws
+   git clone git@github.com:paion-data/packer-plugin-paion-data.git
+   cd packer-plugin-paion-data
    ```
 
 2. Build the plugin from the root directory:
 
    ```shell 
-   go build -ldflags="-X github.com/QubitPi/packer-plugin-hashicorp-aws/version.VersionPrerelease=dev" -o packer-plugin-hashicorp-aws
+   go build -ldflags="-X github.com/paion-data/packer-plugin-paion-data/version.VersionPrerelease=dev" -o packer-plugin-paion-data
    ```
 
-3. After We successfully compile, the `packer-plugin-hashicorp-aws` plugin binary file is in the root directory.
+3. After We successfully compile, the `packer-plugin-paion-data` plugin binary file is in the root directory.
 
 4. To install the compiled plugin, run the following command
 
    ```shell
-   packer plugins install --path packer-plugin-hashicorp-aws github.com/QubitPi/hashicorp-aws
+   packer plugins install --path packer-plugin-paion-data github.com/paion-data/paion-data
    ```
 
 > [!TIP]
@@ -120,10 +120,10 @@ This will run the acceptance tests for all plugins in this set.
 > 
 > Please make sure the acceptance tests are running against the local version by deleting all previously installed
 > versions under `$HOME/. config/packer/plugins` directory. Otherwise, the tests will pick up the old released version
-> if they were installed before. Deleting `github.com/QubitPi/hashicorp-aws`, for example, would be
+> if they were installed before. Deleting `github.com/paion-data/paion-data`, for example, would be
 > 
 > ```console
-> rm -rf ~/.config/packer/plugins/github.com/QubitPi/hashicorp-aws
+> rm -rf ~/.config/packer/plugins/github.com/paion-data/paion-data
 > ```
 
 ## Registering Plugin as Packer Integration
@@ -140,28 +140,22 @@ plugin as a Packer integration refer to the [Developing Plugins](https://develop
 License
 -------
 
-The use and distribution terms for [packer-plugin-hashicorp-aws] are covered by the [Apache License, Version 2.0].
-
-<div align="center">
-    <a href="https://opensource.org/licenses">
-        <img align="center" width="50%" alt="License Illustration" src="https://github.com/QubitPi/QubitPi/blob/master/img/apache-2.png?raw=true">
-    </a>
-</div>
+The use and distribution terms for [packer-plugin-paion-data] are covered by the [Apache License, Version 2.0].
 
 [Apache License Badge]: https://img.shields.io/badge/Apache%202.0-F25910.svg?style=for-the-badge&logo=Apache&logoColor=white
 [Apache License URL]: https://www.apache.org/licenses/LICENSE-2.0
 [Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
 
-[GitHub Last Commit]: https://img.shields.io/github/last-commit/QubitPi/packer-plugin-hashicorp-aws/master?logo=github&style=for-the-badge
-[GitHub Workflow Status badge]: https://img.shields.io/github/actions/workflow/status/QubitPi/packer-plugin-hashicorp-aws/ci-cd.yml?branch=master&logo=github&style=for-the-badge
-[GitHub Workflow Status URL]: https://github.com/QubitPi/packer-plugin-hashicorp-aws/actions/workflows/ci-cd.yml
+[GitHub Last Commit]: https://img.shields.io/github/last-commit/paion-data/packer-plugin-paion-data/master?logo=github&style=for-the-badge
+[GitHub Workflow Status badge]: https://img.shields.io/github/actions/workflow/status/paion-data/packer-plugin-paion-data/ci-cd.yml?branch=master&logo=github&style=for-the-badge
+[GitHub Workflow Status URL]: https://github.com/paion-data/packer-plugin-paion-data/actions/workflows/ci-cd.yml
 [Go Badge]: https://img.shields.io/badge/Go%20>=%201.20-00ADD8?style=for-the-badge&logo=go&logoColor=white
 
-[hashicorp-aws]: https://hashicorp-aws.com/
-[HashiCorp Packer]: https://packer.qubitpi.org/packer/docs
-[HashiCorp Packer init]: https://packer.qubitpi.org/packer/docs/commands/init
-[HashiCorp Packer installing a plugin]: https://packer.qubitpi.org/packer/docs/plugins#installing-plugins
+[immutable-infrastructure.com]: https://immutable-infrastructure.com
+[HashiCorp Packer]: https://developer.hashicorp.com/packer/docs
+[HashiCorp Packer init]: https://developer.hashicorp.com/packer/docs/commands/init
+[HashiCorp Packer installing a plugin]: https://developer.hashicorp.com/packer/docs/plugins#installing-plugins
 [HashiCorp Packer SDK Badge]: https://img.shields.io/badge/Packer%20Plugin%20SDK>=%20v0.5.2-000000?style=for-the-badge&logo=hashicorp&logoColor=white
 [HashiCorp Packer SDK URL]: https://github.com/hashicorp/packer-plugin-sdk
 [HashiCorp Packer Badge]: https://img.shields.io/badge/Packer%20>=%20v1.11.0-02A8EF?style=for-the-badge&logo=Packer&logoColor=white
-[HashiCorp Packer URL]: https://packer.qubitpi.org/packer/docs
+[HashiCorp Packer URL]: https://developer.hashicorp.com/packer/docs
