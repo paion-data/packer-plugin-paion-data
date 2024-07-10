@@ -10,17 +10,17 @@ packer {
   }
 }
 
-source "docker" "hashicorp-aws" {
+source "docker" "paion-data" {
   image  = "jack20191124/packer-plugin-hashicorp-aws-acc-test-base:latest"
   discard = true
 }
 
 build {
   sources = [
-    "source.docker.hashicorp-aws"
+    "source.docker.paion-data"
   ]
 
-  provisioner "hashicorp-aws-sonatype-nexus-repository-provisioner" {
+  provisioner "paion-data-sonatype-nexus-repository-provisioner" {
     homeDir                       = "/"
     sslCertBase64                 = "YXNkZnNnaHRkeWhyZXJ3ZGZydGV3ZHNmZ3RoeTY0cmV3ZGZyZWd0cmV3d2ZyZw=="
     sslCertKeyBase64              = "MzI0NXRnZjk4dmJoIGNsO2VbNDM1MHRdzszNDM1b2l0cmo="

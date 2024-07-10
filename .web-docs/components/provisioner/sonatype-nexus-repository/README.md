@@ -12,10 +12,10 @@ The `sonatype-nexus-repository` provisioner is used to install Sonatype Nexus Re
 
 - `sonatypeNexusRepositoryDomain` (string) - the SSL-enabled domain that will serve the deployed HTTP Nexus instance.
 - `sslCertBase64` (string) - is a __base64 encoded__ string of the content of
-  [SSL certificate file](https://hashicorp-aws.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
+  [SSL certificate file](https://immutable-infrastructure.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
   example `nexus.mycompany.com` given the `sonatypeNexusRepositoryDomain` is `nexus.mycompany.com`.
 - `sslCertKeyBase64` (string) - is a __base64 encoded__ string of the content of
-  [SSL certificate key file](https://hashicorp-aws.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
+  [SSL certificate key file](https://immutable-infrastructure.com/docs/setup#optional-setup-ssl) for the SSL-enabled domain, for
   example `nexus.mycompany.com` given the `sonatypeNexusRepositoryDomain` is `nexus.mycompany.com`.
 
 <!--
@@ -48,8 +48,8 @@ packer {
   }
 }
 
-source "amazon-ebs" "hashicorp-aws" {
-  ami_name              = "packer-plugin-hashicorp-aws-acc-test-ami"
+source "amazon-ebs" "paion-data" {
+  ami_name              = "packer-plugin-paion-data-acc-test-ami"
   force_deregister      = "true"
   force_delete_snapshot = "true"
 
@@ -75,10 +75,10 @@ source "amazon-ebs" "hashicorp-aws" {
 
 build {
   sources = [
-    "source.amazon-ebs.hashicorp-aws"
+    "source.amazon-ebs.paion-data"
   ]
 
-  provisioner "hashicorp-aws-sonatype-nexus-repository-provisioner" {
+  provisioner "paion-data-sonatype-nexus-repository-provisioner" {
     homeDir                       = "/home/ubuntu"
     sslCertBase64                 = "YXNkZnNnaHRkeWhyZXJ3ZGZydGV3ZHNmZ3RoeTY0cmV3ZGZyZWd0cmV3d2ZyZw=="
     sslCertKeyBase64              = "MzI0NXRnZjk4dmJoIGNsO2VbNDM1MHRdzszNDM1b2l0cmo="
