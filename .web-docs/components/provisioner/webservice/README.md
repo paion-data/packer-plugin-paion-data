@@ -3,14 +3,14 @@
   be helpful to a user. See https://www.packer.io/docs/provisioner/null
 -->
 
-The `webservice` provisioner is used to install Jersey-Jetty webservice WAR file in AWS AMI image
+The `webservice` provisioner is used to install Spring Boot webservice JAR file in AWS AMI image
 
 
 <!-- Provisioner Configuration Fields -->
 
 **Required**
 
-- `warSource` (string) - The path to a local WAR file to upload to the machine. The path can be absolute or relative. If
+- `jarSource` (string) - The path to a local JAR file to upload to the machine. The path can be absolute or relative. If
    it is relative, it is relative to the working directory when Packer is executed.
 
 
@@ -76,7 +76,7 @@ build {
 
   provisioner "paion-data-webservice-provisioner" {
     homeDir   = "/home/ubuntu"
-    warSource = "my-webservice.war"
+    jarSource = "my-webservice.jar"
   }
 }
 ```
