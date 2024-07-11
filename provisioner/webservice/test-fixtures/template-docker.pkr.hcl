@@ -22,6 +22,6 @@ build {
 
   provisioner "paion-data-webservice-provisioner" {
     homeDir   = "/"
-    warSource = "my-webservice.war"
+    jarSource = "my-webservice.jar"
   }
 }

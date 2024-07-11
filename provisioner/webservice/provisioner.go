@@ -19,7 +19,7 @@ import (
 )
 
 type Config struct {
-	WarSource string `mapstructure:"warSource" required:"true"`
+	JarSource string `mapstructure:"jarSource" required:"true"`
 	HomeDir   string `mapstructure:"homeDir" required:"false"`
 
 	ctx interpolate.Context
@@ -45,9 +45,9 @@ func (p *Provisioner) Prepare(raws ...interface{}) error {
 func (p *Provisioner) Provision(ctx context.Context, ui packersdk.Ui, communicator packersdk.Communicator, generatedData map[string]interface{}) error {
 	p.config.HomeDir = ssl.GetHomeDir(p.config.HomeDir)
 
-	warFileDst := fmt.Sprintf(filepath.Join(p.config.HomeDir, "ROOT.war"))
+	jarFileDst := fmt.Sprintf(filepath.Join(p.config.HomeDir, "webservice.jar"))
 
-	err := file.Provision(p.config.ctx, ui, communicator, p.config.WarSource, warFileDst)
+	err := file.Provision(p.config.ctx, ui, communicator, p.config.JarSource, jarFileDst)
 	if err != nil {
 		return err
 	}
