@@ -20,7 +20,7 @@ import (
 var testProvisionerHCL2Docker string
 
 func TestAccWebserviceProvisioner(t *testing.T) {
-	tempFile, err := os.CreateTemp(t.TempDir(), "my-webservice.war")
+	tempFile, err := os.CreateTemp(t.TempDir(), "my-webservice.jar")
 	if err != nil {
 		return
 	}
@@ -33,7 +33,7 @@ func TestAccWebserviceProvisioner(t *testing.T) {
 		Teardown: func() error {
 			return nil
 		},
-		Template: strings.Replace(testProvisionerHCL2Docker, "my-webservice.war", tempFile.Name(), -1),
+		Template: strings.Replace(testProvisionerHCL2Docker, "my-webservice.jar", tempFile.Name(), -1),
 		Type:     "paion-data-webservice-provisioner",
 		Check: func(buildCommand *exec.Cmd, logfile string) error {
 			if buildCommand.ProcessState != nil {
